@@ -1,0 +1,15 @@
+FALSE	8074	/home/deck/.local/share/Steam/steamapps/shadercache/45760
+FALSE	209	/home/deck/.local/share/Steam/steamapps/shadercache/70600
+FALSE	76	/home/deck/.local/share/Steam/steamapps/shadercache/409710
+FALSE	74	/home/deck/.local/share/Steam/steamapps/shadercache/285160
+FALSE	59	/home/deck/.local/share/Steam/steamapps/shadercache/731490
+FALSE	20	/home/deck/.local/share/Steam/steamapps/shadercache/939850
+FALSE	7	/home/deck/.local/share/Steam/steamapps/shadercache/584400
+FALSE	6	/home/deck/.local/share/Steam/steamapps/shadercache/442070
+FALSE	5	/home/deck/.local/share/Steam/steamapps/shadercache/397460
+FALSE	5	/home/deck/.local/share/Steam/steamapps/shadercache/312990
+FALSE	4	/home/deck/.local/share/Steam/steamapps/shadercache/287260
+FALSE	3	/home/deck/.local/share/Steam/steamapps/shadercache/415150
+FALSE	3	/home/deck/.local/share/Steam/steamapps/shadercache/40800
+FALSE	3	/home/deck/.local/share/Steam/steamapps/shadercache/251470
+FALSE	1	/home/deck/.local/share/Steam/steamapps/shadercache/3970561324
