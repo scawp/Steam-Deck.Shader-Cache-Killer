@@ -22,7 +22,7 @@ delete_file="$config_dir/delete-list.txt"
 
 
 #create config folder if missing
-if [ ! -d "$cache_dir" ]; then
+if [ ! -d "$config_dir" ]; then
   echo "creating config dir"
   mkdir "$config_dir"
 fi
