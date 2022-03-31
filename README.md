@@ -6,9 +6,11 @@ Script to Purge The Steam Decks Shader Cache
 
 With the 64GB verson of the Steam Deck, "Other" can quicky fill your internal SSD even if you only store Games on the SD card.
 
+For me this was a result of installing the same game several times on different SD cards which then prevented me from installing other games.
+
 ## Solution?
 
-To free up some of the space you can delete the Shader Cache, this scrpt aims to make that process a little easier.
+To free up some of the space you can delete the Shader Cache, this script aims to make that process a little easier.
 
 ## Why not Compdata also?
 
@@ -17,6 +19,8 @@ I tested this and it broke all my Proton installs with no easy way to repair oth
 ## Is this safe?
 
 This has had limited testing on one system, USE AT OWN RISK
+
+## What 
 
 ## What results can I expect?
 
