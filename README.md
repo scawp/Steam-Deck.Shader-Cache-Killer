@@ -55,3 +55,7 @@ Click `Delete Selected!`
 ## Adding to Steam
 
 You can also add this as a non-steam game if desired, icons and banner art provided in `steamArt`
+
+# Found a Bug?
+
+Please add to the `issues` tab! https://github.com/scawp/Steam-Deck.Shader-Cache-Killer/issues
