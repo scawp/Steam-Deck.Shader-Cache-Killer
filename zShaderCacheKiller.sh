@@ -1,7 +1,7 @@
 #!/bin/bash
 #Steam Deck Shader Cache Killer by scawp
-#License: DBAD: https://github.com/scawp/Steam-Deck-Shader-Cache-Killer/blob/main/LICENSE.md
-#Source: https://github.com/scawp/Steam-Deck-Shader-Cache-Killer
+#License: DBAD: https://github.com/scawp/Steam-Deck.Shader-Cache-Killer/blob/main/LICENSE.md
+#Source: https://github.com/scawp/Steam-Deck.Shader-Cache-Killer
 
 live=1
 if [ "$1" = "dry-run" ]; then
