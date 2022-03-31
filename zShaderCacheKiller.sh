@@ -87,7 +87,7 @@ selected_caches=$(zenity --list --title="Select Folders for Deletion" \
 if [ "$?" = 1 ] ; then
   #1 means "ok" wasn't pressed, check if "about" was
   if [ "$selected_caches" = "About" ]; then
-    xdg-open "https://github.com/scawp/Steam-Deck-Shader-Cache-Killer"
+    xdg-open "https://github.com/scawp/Steam-Deck.Shader-Cache-Killer"
     #pressing about closes the script, could use some functions but meh just rerun
     exit 0;
   fi 
