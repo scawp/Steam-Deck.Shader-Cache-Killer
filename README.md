@@ -28,15 +28,29 @@ For me I has 16.2GB of "Other" data, running this dropped this down to ~7GB
 
 ## How to use
 
-Open `Konsole` and choose a place you want to download (I like to have all my Git Repositories in `/home/deck/repo` ( `mkdir /home/deck/repo` )
+Open `Konsole` and choose a place you want to download (I like to have all my Git Repositories in `/home/deck/repo` so instructions will be for this)
 
-1 clone the repo `git clone git@github.com:scawp/Steam-Deck.Shader-Cache-Killer.git`
+make the directory with `mkdir /home/deck/repo`
 
-2 run `./zShaderCacheKiller.sh`
+move into the directory `cd /home/deck/repo
 
-3 Select Caches you wish to Delete, they are ordered by Size
+clone the repo `git clone https://github.com/scawp/Steam-Deck.Shader-Cache-Killer.git`
 
-4 Click `Delete Selected!`
+move into the directory `cd Steam-Deck.Shader-Cache-Killer`
+
+change the permissons of the script to make it execuatable `chmod -x zShaderCacheKiller.sh`
+
+### Optional! To make some fake Caches for test deleting 
+
+run `./zShaderCacheKiller.sh dry-run`
+
+### Live 
+
+run `./zShaderCacheKiller.sh`
+
+Select Caches you wish to Delete, they are ordered by Size
+
+Click `Delete Selected!`
 
 ## Adding to Steam
 
