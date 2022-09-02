@@ -42,9 +42,11 @@ move into the directory `cd Steam-Deck.Shader-Cache-Killer`
 
 change the permissons of the script to make it execuatable `chmod -x zShaderCacheKiller.sh`
 
-### Optional! To make some fake Caches for test deleting 
+### Testing
 
 run `./zShaderCacheKiller.sh dry-run`
+
+no files will be deleted.
 
 ### Live 
 
