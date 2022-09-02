@@ -1,6 +1,6 @@
 # Steam Deck: Shader Cache Killer
 
-Script to Purge The Steam Decks Shader Cache
+Script to Purge The Steam Decks Shader Cache/ Compat Data
 
 ## Problem
 
@@ -12,9 +12,11 @@ For me this was a result of installing the same game several times on different 
 
 To free up some of the space you can delete the Shader Cache, this script aims to make that process a little easier.
 
-## Why not Compdata also?
+## ~~Why not~~ Compdata also?
 
-I tested this and it broke all my Proton installs with no easy way to repair other than a Factory Reset, more research is required for other locations.
+Yes if you click `compactdata`, be sure not to delete any Proton files. Games will probaby become unplayable!
+
+~~I tested this and it broke all my Proton installs with no easy way to repair other than a Factory Reset, more research is required for other locations.~~
 
 ## Is this safe?
 
@@ -32,7 +34,7 @@ Open `Konsole` and choose a place you want to download (I like to have all my Gi
 
 make the directory with `mkdir /home/deck/repo`
 
-move into the directory `cd /home/deck/repo
+move into the directory `cd /home/deck/repo`
 
 clone the repo `git clone https://github.com/scawp/Steam-Deck.Shader-Cache-Killer.git`
 
@@ -48,7 +50,7 @@ run `./zShaderCacheKiller.sh dry-run`
 
 run `./zShaderCacheKiller.sh`
 
-Select Caches you wish to Delete, they are ordered by Size
+Select Caches/comptdata you wish to Delete, they are ordered by Size
 
 Click `Delete Selected!`
 

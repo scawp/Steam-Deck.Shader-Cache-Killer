@@ -2,146 +2,139 @@
 #Steam Deck Shader Cache Killer by scawp
 #License: DBAD: https://github.com/scawp/Steam-Deck.Shader-Cache-Killer/blob/main/LICENSE.md
 #Source: https://github.com/scawp/Steam-Deck.Shader-Cache-Killer
+# Use at own Risk!
 
 live=1
 if [ "$1" = "dry-run" ]; then
   live=0
 fi
 
-config_dir="$(dirname "$(realpath "$0")")/cacheKiller"
+#live=0 #uncomment for debugging/testing
 
-if [ $live = 1 ]; then
-  cache_dir="/home/deck/.local/share/Steam/steamapps/shadercache"
-else
-  cache_dir="$config_dir/fakeShaderCache"
+tmp_dir="$(dirname "$(realpath "$0")")/cacheKiller"
+steamapps_dir="/home/deck/.local/share/Steam/steamapps"
+
+#create tempory directory
+if [ ! -d "$tmp_dir" ]; then
+  echo "creating tmp_dir dir"
+  mkdir "$tmp_dir"
 fi
 
-exclude_file="$config_dir/exclude-list.txt"
-temp_file="$config_dir/temp-file.txt"
-delete_file="$config_dir/delete-list.txt"
-
-
-#create config folder if missing
-if [ ! -d "$config_dir" ]; then
-  echo "creating config dir"
-  mkdir "$config_dir"
+#check we can find the steamapps directory
+if [ ! -d "$steamapps_dir" ]; then
+  zenity --error --width=400 \
+  --text="Cannot find $steamapps_dir, Quitting!"
+  exit 1;
 fi
 
-#create exclude file if missing
-if [ ! -f "$exclude_file" ]; then
-  echo "creating exclude file"
-  true > "$exclude_file"
-fi
+#find all of the steam library locations
+steamapp_dir=( $(grep -ho '\"path\"\s*\".*\"' "$steamapps_dir/libraryfolders.vdf" | sed -e 's/^\"path\"\s*\"//' -e 's/\"$/\/steamapps/') )
 
-#purge temp files
-true > "$temp_file"
-true > "$delete_file"
+function get_list () {
+  du -m --max-depth 0  "$steamapps_dir/$1"/* | sort -nr > "$tmp_dir/tmp_list.txt"
 
+  du -m --max-depth 0  "$steamapps_dir/$1"/* | sort -nr | sed 's/^.*\///' > "$tmp_dir/tmp_ids.txt"
 
-if [ ! -d "$cache_dir" ]; then
-  if [ $live = 1 ]; then
-    zenity --error --width=400 \
-      --text="Cache Dir Not Found! Quitting!"
-    exit 1;
-  else
-    echo "creating fake cache dir"
-    mkdir "$cache_dir"
-  fi
-fi
+  du -m --max-depth 0  "$steamapps_dir/$1"/* | sort -nr | sed -e 's/^.*\///' -e 's/^/appmanifest_/' -e 's/$/\.acf/' > "$tmp_dir/tmp_col_manifest.txt"
 
-if [ ! "$(ls -A "$cache_dir")" ]; then
-  if [ $live = 1 ]; then
-    zenity --error --width=400 \
-      --text="Cache Dir Empty! Quitting!"
-    exit 1;
-  else
-    echo "creating fake cache"
-    for i in {1..10}; do
-      mkdir "$cache_dir/$i"
+  true > "$tmp_dir/tmp_names.txt"
+
+  while read -r manifest; do
+    found=0
+    for dir in "${steamapp_dir[@]}"; do 
+      if [ -s  "$dir/$manifest" ]; then
+        grep -ho '\"installdir\"\s*\".*\"' "$dir/$manifest" | sed -e 's/^\"installdir\"\s*\"//' -e 's/\"$//' >> "$tmp_dir/tmp_names.txt"
+        found=1
+        break
+      fi
     done
+
+    if [ $found = 0 ]; then
+      echo "Unknown Game" >> "$tmp_dir/tmp_names.txt"
+    fi
+  done < "$tmp_dir/tmp_col_manifest.txt"
+
+  paste "$tmp_dir/tmp_list.txt" "$tmp_dir/tmp_ids.txt" "$tmp_dir/tmp_names.txt" | sed -e 's/^/FALSE\t/' > "$tmp_dir/tmp_merged.txt"
+
+  #Don't list Proton, deleting them is Garbage Day
+  sed -i '/Proton/d' "$tmp_dir/tmp_merged.txt"
+}
+
+function gui () {
+  IFS=$'\t';
+  selected_caches=$(zenity --list --title="Select $1 for Deletion" \
+    --width=1000 --height=720 --print-column=3   --separator="\t" \
+    --ok-label "Delete Selected!" --extra-button "$2" \
+    --checklist --column="check" --column="Size (MB)" --column="Path" --column="ID" --column="NAME" \
+    $(cat "$tmp_dir/tmp_merged.txt" | sed -e 's/$/\t/'))
+  ret_value="$?"
+  unset IFS;
+}
+
+function main () {
+  get_list $1 $2
+  gui $1 $2
+
+  if [ "$ret_value" = 1 ]; then
+    if [ "$selected_caches" = "compatdata" ]; then
+      main "compatdata" "shadercache"
+    else
+      if [ "$selected_caches" = "shadercache" ]; then
+        main "shadercache" "compatdata"
+      else  
+        exit;
+      fi
+    fi
   fi
-fi
 
+  IFS=$'\t'; selected_cache_array=($selected_caches); unset IFS;
+  i=0
 
-cache_list=$(du -m --max-depth 0 \
-  "$cache_dir"/* \
-  | sort -nr)
-
-while read -r line; do
-  IFS=$'\t'; column=($line); unset IFS;
-
-  if grep -q "^${column[1]}$" "$exclude_file"; then
-    echo "FALSE"$'\t'"${column[0]}"$'\t'"${column[1]}" >> "$temp_file"
-  else
-    echo "TRUE"$'\t'"${column[0]}"$'\t'"${column[1]}" >> "$temp_file"
+  if [ "${#selected_cache_array[@]}" = 0 ]; then
+    zenity --error --width=400 \
+    --text="No $1 Selected, Quitting!"
+    exit 1;
   fi
-done <<< "$cache_list"
 
+  if [ "$1" = "compatdata" ]; then
+    zenity --question --width=400 \
+    --text="Warning!\nDeleting compactdata will break the game!\nDeleting compactdata for a  Proton version will break Proton!\nCheck appIds on steamdb if in doubt!\nContinue at own risk!"
 
-selected_caches=$(zenity --list --title="Select Folders for Deletion" \
-  --width=1000 --height=720 --print-column=3 \
-  --separator='\t' --ok-label "Delete Selected!" --extra-button "About" \
-  --checklist --column="check" --column="Size" --column="Path" \
-  $(cat "$temp_file"))
+    if [ "$?" = 1 ]; then
+      exit 1;
+    fi
+  fi
 
-if [ "$?" = 1 ] ; then
-  #1 means "ok" wasn't pressed, check if "about" was
-  if [ "$selected_caches" = "About" ]; then
-    xdg-open "https://github.com/scawp/Steam-Deck.Shader-Cache-Killer"
-    #pressing about closes the script, could use some functions but meh just rerun
-    exit 0;
-  fi 
-  zenity --error --width=400 \
-    --text="User Cancelled, Quitting!"
-  exit 1;
-fi
+  (
+    for selected_cache in "${selected_cache_array[@]}"; do
+      ((i++))
+      echo "# Killing $selected_cache";
+      ((percentage=($i*100/${#selected_cache_array[@]})))
 
-IFS=$'\t'; selected_cache_array=($selected_caches); unset IFS;
-i=0
+      if [ $live = 1 ]; then
+        rm -r "$selected_cache"
+      fi
 
-if [ "${#selected_cache_array[@]}" = 0 ]; then
-  zenity --error --width=400 \
-  --text="No Cache Selected, Quitting!"
-  exit 1;
-fi
+      echo "$percentage"; 
+      #delay progress bar a little
+      sleep 1
+    done
+    if [ $live = 1 ]; then
+      echo "# $1 Killed!"
+    else
+      echo "# Dry-Run nothing deleted!"
+    fi
+  ) | zenity --progress --width=400 \
+    --title="Deleting $1 Dir" \
+    --percentage=0
 
+  if [ "$?" = 1 ] ; then
+    zenity --error --width=400 \
+      --text="User Cancelled, some Cache not cleared!"
+    exit 1;
+  fi
 
-(
-  echo "Size ${#selected_cache_array[@]}"
-for selected_cache in "${selected_cache_array[@]}"; do
-  ((i++))
-  echo "# Killing $selected_cache";
-  ((percentage=($i*100/${#selected_cache_array[@]})))
+  exit 0;
+}
 
-  rm -r "$selected_cache"
-  echo "$selected_cache" >> "$delete_file"
-
-  echo "$percentage"; 
-  #delay progress bar a little
-  sleep 0.5
-done
-echo "# Cache Killed!"
-) | zenity --progress \
-  --title="Deleting Cache Dir" \
-  --percentage=0
-
-if [ "$?" = 1 ] ; then
-  zenity --error --width=400 \
-    --text="User Cancelled, some Cache not cleared!"
-  exit 1;
-fi
-
-
-#purge exclude file
-true > "$exclude_file"
-true > "$temp_file"
-
-#add unselected items to exclude list for next time
-while read -r line; do
-  IFS=$'\t'; column=($line); unset IFS;
-  echo "${column[1]}" >> "$temp_file"
-done <<< "$cache_list"
-
-grep -Fxvf "$delete_file" "$temp_file" > "$exclude_file"
-
-exit 0;
+main "shadercache" "compatdata"
