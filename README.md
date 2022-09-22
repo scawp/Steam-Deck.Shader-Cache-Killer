@@ -63,3 +63,8 @@ You can also add this as a non-steam game if desired, icons and banner art provi
 # Found a Bug?
 
 Please add to the `issues` tab! https://github.com/scawp/Steam-Deck.Shader-Cache-Killer/issues
+
+# "This is cool! How can I thank you?"
+### Why not drop me a sub over on my youtube channel ;) [Chinballs Gaming](https://www.youtube.com/chinballsTV?sub_confirmation=1)
+
+### Also [Check out all these other things I'm making](https://github.com/scawp/Steam-Deck.Tools-List)
