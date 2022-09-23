@@ -2,6 +2,8 @@
 
 Script to Purge The Steam Decks Shader Cache/ Compat Data
 
+<img src="img/example.jpg" width="100%" />
+
 ## Problem
 
 With the 64GB verson of the Steam Deck, "Other" can quicky fill your internal SSD even if you only store Games on the SD card.
@@ -29,6 +31,12 @@ This has had limited testing on one system, USE AT OWN RISK
 For me I has 16.2GB of "Other" data, running this dropped this down to ~7GB
 
 ## How to use
+
+## Via Curl (One Line Run)
+
+In Konsole type `curl -sSL https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/edit/WIP/zShaderCacheKiller.sh | bash`
+
+## Via Git (can be added as a non-steam Game)
 
 Open `Konsole` and choose a place you want to download (I like to have all my Git Repositories in `/home/deck/repo` so instructions will be for this)
 
