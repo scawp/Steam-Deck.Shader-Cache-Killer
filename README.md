@@ -34,7 +34,7 @@ For me I has 16.2GB of "Other" data, running this dropped this down to ~7GB
 
 ## Via Curl (One Line Run)
 
-In Konsole type `curl -sSL https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/edit/WIP/zShaderCacheKiller.sh | bash`
+In Konsole type `curl -sSL https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/main/zShaderCacheKiller.sh | bash`
 
 ## Via Git (can be added as a non-steam Game)
 
