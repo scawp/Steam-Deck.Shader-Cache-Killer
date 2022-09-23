@@ -11,7 +11,7 @@ fi
 
 #live=0 #uncomment for debugging/testing
 
-tmp_dir="$(dirname "$(realpath "$0")")/cacheKiller"
+tmp_dir="/tmp/scawp.SDCacheKiller"
 steamapps_dir="/home/deck/.local/share/Steam/steamapps"
 
 #create tempory directory
@@ -50,7 +50,7 @@ function get_list () {
     done
 
     if [ $found = 0 ]; then
-      echo "Unknown Game" >> "$tmp_dir/tmp_names.txt"
+      echo "Missing Game files" >> "$tmp_dir/tmp_names.txt"
     fi
   done < "$tmp_dir/tmp_col_manifest.txt"
 
