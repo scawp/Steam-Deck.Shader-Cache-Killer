@@ -50,7 +50,7 @@ function get_list () {
     done
 
     if [ $found = 0 ]; then
-      echo "Unknown Game" >> "$tmp_dir/tmp_names.txt"
+      echo "Missing Game files" >> "$tmp_dir/tmp_names.txt"
     fi
   done < "$tmp_dir/tmp_col_manifest.txt"
 
