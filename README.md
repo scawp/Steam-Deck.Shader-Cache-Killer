@@ -24,8 +24,6 @@ Yes if you click `compactdata`, be sure not to delete any Proton files. Games wi
 
 This has had limited testing on one system, USE AT OWN RISK
 
-## What 
-
 ## What results can I expect?
 
 For me I has 16.2GB of "Other" data, running this dropped this down to ~7GB
