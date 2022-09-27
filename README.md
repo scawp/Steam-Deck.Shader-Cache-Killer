@@ -32,41 +32,17 @@ For me I has 16.2GB of "Other" data, running this dropped this down to ~7GB
 
 ## How to use
 
-## Via Curl (One Line Run)
+## Run online Via Curl
 
 In Konsole type `curl -sSL https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/main/zShaderCacheKiller.sh | bash`
 
-## Via Git (can be added as a non-steam Game)
+## Install Via Curl
 
-Open `Konsole` and choose a place you want to download (I like to have all my Git Repositories in `/home/deck/repo` so instructions will be for this)
+In Konsole type `curl -sSL https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/main/curl_install.sh | bash`
 
-make the directory with `mkdir /home/deck/repo`
+The install script will offer to install add `zShaderCacheKiller.sh` to your Steam Libaray for manual mounting and unmounting of Drives which can be ran from `GameMode`. 
 
-move into the directory `cd /home/deck/repo`
-
-clone the repo `git clone https://github.com/scawp/Steam-Deck.Shader-Cache-Killer.git`
-
-move into the directory `cd Steam-Deck.Shader-Cache-Killer`
-
-change the permissons of the script to make it execuatable `chmod -x zShaderCacheKiller.sh`
-
-### Testing
-
-run `./zShaderCacheKiller.sh dry-run`
-
-no files will be deleted.
-
-### Live 
-
-run `./zShaderCacheKiller.sh`
-
-Select Caches/comptdata you wish to Delete, they are ordered by Size
-
-Click `Delete Selected!`
-
-## Adding to Steam
-
-You can also add this as a non-steam game if desired, icons and banner art provided in `steamArt`
+icons and banner art provided in `steamArt` but currently need to be added manually.
 
 # Found a Bug?
 
