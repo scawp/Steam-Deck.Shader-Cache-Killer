@@ -1,3 +1,4 @@
+#why is raw not updating?
 #!/bin/bash
 #Steam Deck Shader Cache Killer by scawp
 #License: DBAD: https://github.com/scawp/Steam-Deck.Shader-Cache-Killer/blob/main/LICENSE.md
