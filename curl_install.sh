@@ -1,4 +1,3 @@
-#why is raw not updating?
 #!/bin/bash
 #Steam Deck Shader Cache Killer by scawp
 #License: DBAD: https://github.com/scawp/Steam-Deck.Shader-Cache-Killer/blob/main/LICENSE.md
@@ -7,7 +6,7 @@
 #stop running script if anything returns an error (non-zero exit )
 set -e
 
-repo_url="https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/curl-installer"
+repo_url="https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/main"
 
 tmp_dir="/tmp/scawp.SDSCK.install"
 
@@ -37,10 +36,6 @@ function install_zShaderCacheKiller () {
     echo "bye then! xxx"
     exit 0;
   fi
-
-
-
-
 
   echo "Making tmp folder $tmp_dir"
   mkdir -p "$tmp_dir"
