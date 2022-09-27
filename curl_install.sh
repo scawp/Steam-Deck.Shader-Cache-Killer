@@ -6,7 +6,7 @@
 #stop running script if anything returns an error (non-zero exit )
 set -e
 
-repo_url="https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/main"
+repo_url="https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/curl-installer"
 
 tmp_dir="/tmp/scawp.SDSCK.install"
 
