@@ -37,6 +37,10 @@ function install_zShaderCacheKiller () {
     exit 0;
   fi
 
+
+
+
+
   echo "Making tmp folder $tmp_dir"
   mkdir -p "$tmp_dir"
 
