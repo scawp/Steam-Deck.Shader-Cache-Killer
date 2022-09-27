@@ -27,7 +27,7 @@ if [ "$device_name" != "steamdeck" ] || [ "$user" != "1000" ]; then
   fi
 fi
 
-function install_automount () {
+function install_zShaderCacheKiller () {
   zenity --question --width=400 \
     --text="Read $repo_url/README.md before proceeding. \
     \nWould you like to add Shader Cache Killer to your Steam Library?"
