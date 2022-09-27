@@ -38,7 +38,7 @@ In Konsole type `curl -sSL https://raw.githubusercontent.com/scawp/Steam-Deck.Sh
 
 In Konsole type `curl -sSL https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/main/curl_install.sh | bash`
 
-The install script will offer to install add `zShaderCacheKiller.sh` to your Steam Libaray for manual mounting and unmounting of Drives which can be ran from `GameMode`. 
+The install script will offer to add `zShaderCacheKiller.sh` to your Steam Libaray, which can be ran from `GameMode`. 
 
 icons and banner art provided in `steamArt` but currently need to be added manually.
 
