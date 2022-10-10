@@ -50,7 +50,22 @@ function get_list () {
     done
 
     if [ $found = 0 ]; then
-      echo "Missing Game files" >> "$tmp_dir/tmp_names.txt"
+      #Non-steam games might be found by checking the controller_ui.txt logs
+      appid="$(echo "$manifest" | sed -e "s/appmanifest_//" -e "s/\.acf//")"
+      find_in_log="$(grep -ri "AppID\s$appid," ~/.local/share/Steam/logs/controller_ui.txt | tail -n 1)"
+      
+      if [ ! -z "$find_in_log" ];then
+       echo "$find_in_log (non-steam)" | sed -e "s/.*,\s//" >> "$tmp_dir/tmp_names.txt"
+      else
+        #try in content_log.txt also
+        find_in_log="$(grep -ri "SteamLaunch\sAppId=$appid" ~/.local/share/Steam/logs/content_log.txt | tail -n 1)"
+        if [ ! -z "$find_in_log" ];then
+          echo "$find_in_log (non-steam)" | sed -e "s/.*[=|\/]//g" -e "s/\"//g" >> "$tmp_dir/tmp_names.txt"
+        else
+          #we don't know or game is deleted
+          echo "Missing Game files" >> "$tmp_dir/tmp_names.txt"
+        fi
+      fi
     fi
   done < "$tmp_dir/tmp_col_manifest.txt"
 
@@ -61,12 +76,12 @@ function get_list () {
 }
 
 function gui () {
-  IFS=$'\t';
+  IFS=$'[\t|\n]';
   selected_caches=$(zenity --list --title="Select $1 for Deletion" \
     --width=1000 --height=720 --print-column=3   --separator="\t" \
     --ok-label "Delete Selected!" --extra-button "$2" \
     --checklist --column="check" --column="Size (MB)" --column="Path" --column="ID" --column="NAME" \
-    $(cat "$tmp_dir/tmp_merged.txt" | sed -e 's/$/\t/'))
+    $(cat "$tmp_dir/tmp_merged.txt"))
   ret_value="$?"
   unset IFS;
 }
