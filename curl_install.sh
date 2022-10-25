@@ -6,6 +6,10 @@
 #stop running script if anything returns an error (non-zero exit )
 set -e
 
+echo $0
+
+exit 0;
+
 repo_url="https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/main"
 
 tmp_dir="/tmp/scawp.SDSCK.install"
