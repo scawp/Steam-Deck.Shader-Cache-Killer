@@ -11,13 +11,20 @@ fi
 
 #live=0 #uncomment for debugging/testing
 
+#script_dir="$(dirname $(realpath "$0"))"
+#conf_dir="$(dirname $(realpath "$0"))/config"
+conf_dir="/tmp/scawp.SDCacheKiller"
 tmp_dir="/tmp/scawp.SDCacheKiller"
 steamapps_dir="/home/deck/.local/share/Steam/steamapps"
 
 #create tempory directory
-if [ ! -d "$tmp_dir" ]; then
-  echo "creating tmp_dir dir"
-  mkdir "$tmp_dir"
+mkdir -p "$tmp_dir"
+mkdir -p "$conf_dir"
+
+#download list of all steam ids if we havn't already
+if [ ! -f "$conf_dir/fulllist.json" ] || [ ! -s "$conf_dir/fulllist.json" ];then 
+  #TODO: Test when offline or errorcode
+  curl "https://api.steampowered.com/ISteamApps/GetAppList/v2/" > "$conf_dir/fulllist.json"
 fi
 
 #check we can find the steamapps directory
@@ -41,29 +48,47 @@ function get_list () {
 
   while read -r manifest; do
     found=0
+    app_id="$(echo "$manifest" | sed -e "s/appmanifest_//" -e "s/\.acf//")"
+
     for dir in "${steamapp_dir[@]}"; do 
       if [ -s  "$dir/$manifest" ]; then
-        grep -ho '\"installdir\"\s*\".*\"' "$dir/$manifest" | sed -e 's/^\"installdir\"\s*\"//' -e 's/\"$//' >> "$tmp_dir/tmp_names.txt"
+        install_dir="$(grep -ho '\"installdir\"\s*\".*\"' "$dir/$manifest" | sed -e 's/^\"installdir\"\s*\"//' -e 's/\"$//')"
+        echo "$install_dir" >> "$tmp_dir/tmp_names.txt"
+        #echo "$dir/$install_dir"
+        #lsblk -loMOUNTPOINT,LABEL | sed "/^\/\S/\!d"
         found=1
         break
       fi
     done
 
+    #TODO: This is slow, cache the results?
+    if [ $found = 0 ] && [ -f "$conf_dir/fulllist.json" ] && [ -s "$conf_dir/fulllist.json" ] && [ "$app_id" -lt 100000000 ];then
+      app_name="$(cat "$conf_dir/fulllist.json" | jq -r ".applist.apps[] | select(.appid == $app_id) | .name")"
+      if [ ! -z "$app_name" ];then 
+        #if [ $found = 0 ]; then
+          echo "$app_name (missing)" >> "$tmp_dir/tmp_names.txt"
+        #else
+        #  echo "$app_name" >> "$tmp_dir/tmp_names.txt"
+        #fi
+        found=1
+      fi
+    fi
+
     if [ $found = 0 ]; then
       #Non-steam games might be found by checking the controller_ui.txt logs
-      appid="$(echo "$manifest" | sed -e "s/appmanifest_//" -e "s/\.acf//")"
-      find_in_log="$(grep -ri "AppID\s$appid," ~/.local/share/Steam/logs/controller_ui.txt | tail -n 1)"
+      app_id="$(echo "$manifest" | sed -e "s/appmanifest_//" -e "s/\.acf//")"
+      find_in_log="$(grep -ri "AppID\s$app_id," ~/.local/share/Steam/logs/controller_ui.txt | tail -n 1)"
       
       if [ ! -z "$find_in_log" ];then
        echo "$find_in_log (non-steam)" | sed -e "s/.*,\s//" >> "$tmp_dir/tmp_names.txt"
       else
         #try in content_log.txt also
-        find_in_log="$(grep -ri "SteamLaunch\sAppId=$appid" ~/.local/share/Steam/logs/content_log.txt | tail -n 1)"
+        find_in_log="$(grep -ri "SteamLaunch\sAppId=$app_id" ~/.local/share/Steam/logs/content_log.txt | tail -n 1)"
         if [ ! -z "$find_in_log" ];then
           echo "$find_in_log (non-steam)" | sed -e "s/.*[=|\/]//g" -e "s/\"//g" >> "$tmp_dir/tmp_names.txt"
         else
-          #we don't know or game is deleted
-          echo "Missing Game files" >> "$tmp_dir/tmp_names.txt"
+          #we don't know
+          echo "Unknown (non-steam)" >> "$tmp_dir/tmp_names.txt"
         fi
       fi
     fi
