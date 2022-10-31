@@ -38,7 +38,12 @@ fi
 steamapp_dir=( $(grep -ho '\"path\"\s*\".*\"' "$steamapps_dir/libraryfolders.vdf" | sed -e 's/^\"path\"\s*\"//' -e 's/\"$/\/steamapps/') )
 
 function get_list () {
-  du -m --max-depth 0  "$steamapps_dir/$1"/* | sort -nr > "$tmp_dir/tmp_list.txt"
+  true > "$tmp_dir/tmp_list.txt"
+  du -m --max-depth 0  "$steamapps_dir/$1"/* | sort -nr > "$tmp_dir/tmp_list2.txt"
+  
+  while read -r path; do
+    du -m --max-depth 0  "$(realpath $path)" >> "$tmp_dir/tmp_list.txt"
+  done <<< "$(awk '{ print $2 }' "$tmp_dir/tmp_list2.txt")"
 
   du -m --max-depth 0  "$steamapps_dir/$1"/* | sort -nr | sed 's/^.*\///' > "$tmp_dir/tmp_ids.txt"
 
@@ -53,7 +58,7 @@ function get_list () {
     for dir in "${steamapp_dir[@]}"; do 
       if [ -s  "$dir/$manifest" ]; then
         install_dir="$(grep -ho '\"installdir\"\s*\".*\"' "$dir/$manifest" | sed -e 's/^\"installdir\"\s*\"//' -e 's/\"$//')"
-        echo "$install_dir" >> "$tmp_dir/tmp_names.txt"
+        echo -e "$install_dir\t " >> "$tmp_dir/tmp_names.txt"
         #echo "$dir/$install_dir"
         #lsblk -loMOUNTPOINT,LABEL | sed "/^\/\S/\!d"
         found=1
@@ -66,7 +71,7 @@ function get_list () {
       app_name="$(cat "$conf_dir/fulllist.json" | jq -r ".applist.apps[] | select(.appid == $app_id) | .name")"
       if [ ! -z "$app_name" ];then 
         #if [ $found = 0 ]; then
-          echo "$app_name (missing)" >> "$tmp_dir/tmp_names.txt"
+          echo -e "$app_name\tUninstalled?" >> "$tmp_dir/tmp_names.txt"
         #else
         #  echo "$app_name" >> "$tmp_dir/tmp_names.txt"
         #fi
@@ -80,15 +85,15 @@ function get_list () {
       find_in_log="$(grep -ri "AppID\s$app_id," ~/.local/share/Steam/logs/controller_ui.txt | tail -n 1)"
       
       if [ ! -z "$find_in_log" ];then
-       echo "$find_in_log (non-steam)" | sed -e "s/.*,\s//" >> "$tmp_dir/tmp_names.txt"
+       echo -e "$find_in_log\tNon-Steam" | sed -e "s/.*,\s//" >> "$tmp_dir/tmp_names.txt"
       else
         #try in content_log.txt also
         find_in_log="$(grep -ri "SteamLaunch\sAppId=$app_id" ~/.local/share/Steam/logs/content_log.txt | tail -n 1)"
         if [ ! -z "$find_in_log" ];then
-          echo "$find_in_log (non-steam)" | sed -e "s/.*[=|\/]//g" -e "s/\"//g" >> "$tmp_dir/tmp_names.txt"
+          echo -e "$find_in_log\tNon-Steam" | sed -e "s/.*[=|\/]//g" -e "s/\"//g" >> "$tmp_dir/tmp_names.txt"
         else
           #we don't know
-          echo "Unknown (non-steam)" >> "$tmp_dir/tmp_names.txt"
+          echo -e "Unknown\tNon-Steam" >> "$tmp_dir/tmp_names.txt"
         fi
       fi
     fi
@@ -96,17 +101,19 @@ function get_list () {
 
   paste "$tmp_dir/tmp_list.txt" "$tmp_dir/tmp_ids.txt" "$tmp_dir/tmp_names.txt" | sed -e 's/^/FALSE\t/' > "$tmp_dir/tmp_merged.txt"
 
+  awk -F '\t' '{ print $1"\t"$2"\t"$4"\t"$5"\t"$6"\t"$3 }' "$tmp_dir/tmp_merged.txt" > "$tmp_dir/tmp_merged2.txt"
+
   #Don't list Proton, deleting them is Garbage Day
-  sed -i '/Proton/d' "$tmp_dir/tmp_merged.txt"
+  sed -i '/Proton/d' "$tmp_dir/tmp_merged2.txt"
 }
 
 function gui () {
   IFS=$'[\t|\n]';
   selected_caches=$(zenity --list --title="Select $1 for Deletion" \
-    --width=1000 --height=720 --print-column=3   --separator="\t" \
+    --width=1200 --height=720 --print-column=6 --separator="\t" \
     --ok-label "Delete Selected!" --extra-button "$2" \
-    --checklist --column="check" --column="Size (MB)" --column="Path" --column="ID" --column="NAME" \
-    $(cat "$tmp_dir/tmp_merged.txt"))
+    --checklist --column="check" --column="Size (MB)" --column="Path" --column="Name" --column="Info" --column="Real Path" \
+    $(cat "$tmp_dir/tmp_merged2.txt"))
   ret_value="$?"
   unset IFS;
 }
@@ -162,7 +169,7 @@ function main () {
     if [ $live = 1 ]; then
       echo "# $1 Killed!"
     else
-      echo "# Dry-Run nothing deleted!"
+      echo "# $1 Dry-Run nothing deleted!"
     fi
   ) | zenity --progress --width=400 \
     --title="Deleting $1 Dir" \
