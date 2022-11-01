@@ -43,7 +43,11 @@ function get_list () {
   
   #Check for symlinked folders
   while read -r path; do
-    du -m --max-depth 0  "$(realpath $path)" >> "$tmp_dir/tmp_list.txt"
+    if [ -h $path ] && [ ! -e $path ]; then
+      echo -e "?\t$(readlink $path)" >> "$tmp_dir/tmp_list.txt"
+    else
+      du -m --max-depth 0  "$(realpath $path)" >> "$tmp_dir/tmp_list.txt"
+    fi
   done <<< "$(awk '{ print $2 }' "$tmp_dir/tmp_list2.txt")"
 
   du -m --max-depth 0  "$steamapps_dir/$1"/* | sort -nr | sed 's/^.*\///' > "$tmp_dir/tmp_ids.txt"

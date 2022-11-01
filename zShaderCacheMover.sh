@@ -97,7 +97,7 @@ function main () {
   (
     for selected_cache in "${selected_cache_array[@]}"; do
       ((i++))
-      new_cache="$(grep -P "\t$selected_cache\t" "$tmp_dir/move_list.txt" | sed -e 's/.*\t//')symlinked/$1/$selected_cache"
+      new_cache="$(grep -P "\t$selected_cache\t" "$tmp_dir/move_list.txt" | sed -e 's/.*\t//')$1/$selected_cache"
 
       echo "# Copying:\n$steamapps_dir/$1/$selected_cache\nTo:\n $new_cache";
       ((percentage=($i*100/${#selected_cache_array[@]})))
