@@ -41,6 +41,7 @@ function get_list () {
   true > "$tmp_dir/tmp_list.txt"
   du -m --max-depth 0  "$steamapps_dir/$1"/* | sort -nr > "$tmp_dir/tmp_list2.txt"
   
+  #Check for symlinked folders
   while read -r path; do
     du -m --max-depth 0  "$(realpath $path)" >> "$tmp_dir/tmp_list.txt"
   done <<< "$(awk '{ print $2 }' "$tmp_dir/tmp_list2.txt")"
@@ -59,22 +60,15 @@ function get_list () {
       if [ -s  "$dir/$manifest" ]; then
         install_dir="$(grep -ho '\"installdir\"\s*\".*\"' "$dir/$manifest" | sed -e 's/^\"installdir\"\s*\"//' -e 's/\"$//')"
         echo -e "$install_dir\t " >> "$tmp_dir/tmp_names.txt"
-        #echo "$dir/$install_dir"
-        #lsblk -loMOUNTPOINT,LABEL | sed "/^\/\S/\!d"
         found=1
-        break
+        break;
       fi
     done
-
     #TODO: This is slow, cache the results?
     if [ $found = 0 ] && [ -f "$conf_dir/fulllist.json" ] && [ -s "$conf_dir/fulllist.json" ] && [ "$app_id" -lt 100000000 ];then
-      app_name="$(cat "$conf_dir/fulllist.json" | jq -r ".applist.apps[] | select(.appid == $app_id) | .name")"
+      app_name="$(cat "$conf_dir/fulllist.json" | jq -r ".applist.apps[] | select(.appid == $app_id) | .name"  | head -n1)"
       if [ ! -z "$app_name" ];then 
-        #if [ $found = 0 ]; then
-          echo -e "$app_name\tUninstalled?" >> "$tmp_dir/tmp_names.txt"
-        #else
-        #  echo "$app_name" >> "$tmp_dir/tmp_names.txt"
-        #fi
+        echo -e "$app_name\tUninstalled?" >> "$tmp_dir/tmp_names.txt"
         found=1
       fi
     fi
