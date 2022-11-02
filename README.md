@@ -48,6 +48,15 @@ In Konsole type `curl -sSL https://raw.githubusercontent.com/scawp/Steam-Deck.Sh
 The install script will offer to add `zShaderCacheKiller.sh` & `zShaderCacheMover.sh` to your Steam Libaray, which can be ran from `GameMode`. 
 
 
+## Uninstall
+
+To uninstall simply delete the install folder:
+
+`sudo rm -r /home/deck/.local/share/scawp/SDSCK`
+
+Also remove the `non-steam game` links in `Steam`
+
+
 # Found a Bug?
 
 Please add to the `issues` tab! https://github.com/scawp/Steam-Deck.Shader-Cache-Killer/issues
