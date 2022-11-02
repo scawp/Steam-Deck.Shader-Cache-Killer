@@ -109,8 +109,8 @@ function gui () {
   IFS=$'[\t|\n]';
   selected_caches=$(zenity --list --title="Select $1 for Deletion" \
     --width=1200 --height=720 --print-column=6 --separator="\t" \
-    --ok-label "Delete Selected!" --extra-button "$2" \
-    --checklist --column="check" --column="Size (MB)" --column="Path" --column="Name" --column="Info" --column="Real Path" \
+    --ok-label "Delete selected $1!" --extra-button "$2" \
+    --checklist --column="check" --column="Size (MB)" --column="App Id" --column="Name" --column="Info" --column="Real Path" \
     $(cat "$tmp_dir/tmp_merged2.txt"))
   ret_value="$?"
   unset IFS;
