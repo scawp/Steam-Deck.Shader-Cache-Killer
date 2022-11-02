@@ -6,7 +6,7 @@
 #stop running script if anything returns an error (non-zero exit )
 set -e
 
-repo_url="https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/main"
+repo_url="https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/WIP-ShaderCacheMover"
 
 tmp_dir="/tmp/scawp.SDSCK.install"
 
@@ -15,7 +15,7 @@ script_install_dir="/home/deck/.local/share/scawp/SDSCK"
 device_name="$(uname --nodename)"
 user="$(id -u deck)"
 
-if [ "$device_name" != "steamdeck" ] || [ "$user" != "1000" ]; then
+if [ "$device_name" !='' "steamdeck" ] || [ "$user" != "1000" ]; then
   zenity --question --width=400 \
   --text="This code has been written specifically for the Steam Deck with user Deck \
   \nIt appears you are running on a different system/non-standard configuration. \
@@ -45,14 +45,21 @@ function install_zShaderCacheKiller () {
 
   echo "Downloading Required Files"
   curl -o "$tmp_dir/zShaderCacheKiller.sh" "$repo_url/zShaderCacheKiller.sh"
+  curl -o "$tmp_dir/zShaderCacheMover.sh" "$repo_url/zShaderCacheMover.sh"
 
   echo "Copying $tmp_dir/zShaderCacheKiller.sh to $script_install_dir/zShaderCacheKiller.sh"
   sudo cp "$tmp_dir/zShaderCacheKiller.sh" "$script_install_dir/zShaderCacheKiller.sh"
 
+  echo "Copying $tmp_dir/zShaderCacheMover.sh to $script_install_dir/zShaderCacheMover.sh"
+  sudo cp "$tmp_dir/zShaderCacheMover.sh" "$script_install_dir/zShaderCacheMover.sh"
+
   echo "Adding Execute and Removing Write Permissions"
   sudo chmod 555 "$script_install_dir/zShaderCacheKiller.sh"
+  sudo chmod 555 "$script_install_dir/zShaderCacheMover.sh"
 
-  steamos-add-to-steam "$script_install_dir/zShaderCacheKiller.sh"
+  add_killer="$(steamos-add-to-steam "$script_install_dir/zShaderCacheKiller.sh")"
+  add_mover="$(steamos-add-to-steam "$script_install_dir/zShaderCacheMover.sh")"
+
 }
 
 install_zShaderCacheKiller
