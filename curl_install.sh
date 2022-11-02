@@ -15,7 +15,7 @@ script_install_dir="/home/deck/.local/share/scawp/SDSCK"
 device_name="$(uname --nodename)"
 user="$(id -u deck)"
 
-if [ "$device_name" != "steamdeck" ] || [ "$user" != "1000" ]; then
+if [ "$device_name" !='' "steamdeck" ] || [ "$user" != "1000" ]; then
   zenity --question --width=400 \
   --text="This code has been written specifically for the Steam Deck with user Deck \
   \nIt appears you are running on a different system/non-standard configuration. \
@@ -57,8 +57,8 @@ function install_zShaderCacheKiller () {
   sudo chmod 555 "$script_install_dir/zShaderCacheKiller.sh"
   sudo chmod 555 "$script_install_dir/zShaderCacheMover.sh"
 
-  steamos-add-to-steam "$script_install_dir/zShaderCacheKiller.sh"
-  steamos-add-to-steam "$script_install_dir/zShaderCacheMover.sh"
+  add_killer="$(steamos-add-to-steam "$script_install_dir/zShaderCacheKiller.sh")"
+  add_mover="$(steamos-add-to-steam "$script_install_dir/zShaderCacheMover.sh")"
 
 }
 
