@@ -58,6 +58,7 @@ function install_zShaderCacheKiller () {
   sudo chmod 555 "$script_install_dir/zShaderCacheMover.sh"
 
   add_killer="$(steamos-add-to-steam "$script_install_dir/zShaderCacheKiller.sh")"
+  sleep 2;
   add_mover="$(steamos-add-to-steam "$script_install_dir/zShaderCacheMover.sh")"
 
 }
