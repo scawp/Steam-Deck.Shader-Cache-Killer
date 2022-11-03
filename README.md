@@ -34,6 +34,10 @@ My Back 4 Blood install was also using 3.5GB of Shader Cache, this I did not wan
 
 ## How to use
 
+## Video Guide
+
+https://www.youtube.com/watch?v=SLGvTDGDUcY
+
 ## Run online Via Curl
 
 In Konsole type `curl -sSL https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/main/zShaderCacheKiller.sh | bash` to run `zShaderCacheKiller`
