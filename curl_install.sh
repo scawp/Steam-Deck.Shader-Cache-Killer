@@ -3,23 +3,23 @@
 #License: DBAD: https://github.com/scawp/Steam-Deck.Shader-Cache-Killer/blob/main/LICENSE.md
 #Source: https://github.com/scawp/Steam-Deck-Shader.Cache-Killer
 
-#stop running script if anything returns an error (non-zero exit )
-set -e
-
 repo_url="https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/main"
 
 tmp_dir="/tmp/scawp.SDSCK.install"
 
 script_install_dir="/home/deck/.local/share/scawp/SDSCK"
 
-device_name="$(uname --nodename)"
-user="$(id -u deck)"
+distributor=$(lxsb_release -is 2>/dev/null)
+user_id=$(id -u deck2 2>/dev/null)
 
-if [ "$device_name" !='' "steamdeck" ] || [ "$user" != "1000" ]; then
+#stop running script if anything returns an error (non-zero exit )
+set -e
+
+if [[ "$distributor" != "SteamOS" || "$user_id" != "1000" ]]; then
   zenity --question --width=400 \
-  --text="This code has been written specifically for the Steam Deck with user Deck \
-  \nIt appears you are running on a different system/non-standard configuration. \
-  \nAre you sure you want to continue?"
+         --text="This code has been written specifically for the Steam Deck with user 'deck'. \
+               \nIt appears you are running on a different system/non-standard configuration. \
+               \nAre you sure you want to continue?"
   if [ "$?" != 0 ]; then
     #NOTE: This code will never be reached due to "set -e", the system will already exit for us but just incase keep this
     echo "bye then! xxx"
