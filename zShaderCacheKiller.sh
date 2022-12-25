@@ -35,7 +35,7 @@ if [ ! -d "$steamapps_dir" ]; then
 fi
 
 #find all of the steam library locations
-steamapp_dir=( $(grep -ho '\"path\"\s*\".*\"' "$steamapps_dir/libraryfolders.vdf" | sed -e 's/^\"path\"\s*\"//' -e 's/\"$/\/steamapps/') )
+steamapp_dir=( $(sed -nE 's@^\s*"path"\s*"([^"]*)".*@\1/steamapps@p' "$steamapps_dir/libraryfolders.vdf") )
 
 function get_list () {
   true > "$tmp_dir/tmp_list.txt"
@@ -62,7 +62,7 @@ function get_list () {
 
     for dir in "${steamapp_dir[@]}"; do 
       if [ -s  "$dir/$manifest" ]; then
-        install_dir="$(grep -ho '\"installdir\"\s*\".*\"' "$dir/$manifest" | sed -e 's/^\"installdir\"\s*\"//' -e 's/\"$//')"
+        install_dir=$(sed -nE 's@^\s*"installdir"\s*"([^"]*)".*@\1@p' "$dir/$manifest")
         echo -e "$install_dir\t " >> "$tmp_dir/tmp_names.txt"
         found=1
         break;
