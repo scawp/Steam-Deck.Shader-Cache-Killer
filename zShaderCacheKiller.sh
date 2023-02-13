@@ -120,12 +120,19 @@ function create_list () {
   shopt -u nullglob # Filename globbing patterns that don't match any filenames are simply expanded to nothing
   rm -f "$realpaths_file"
   for path in "$STEAMAPPS_DIR/$1"/*; do
-    if [[ -L "$path" && ! -e "$path" ]]; then
-      realpath=$(realpath "$(readlink "$path")");
-      size='?'
+    if [[ -L "$path" ]]; then
+      realpath="$(readlink "$path")"
     else
-      realpath=$(realpath "$path"); tmp_size=$(du -ms "$realpath"); size=${tmp_size%%?/*}
+      realpath=$(realpath "$path")
     fi
+    if [[ -e "$realpath" ]]; then
+      tmp_size=$(du -ms "$realpath"); size=${tmp_size%%?/*}
+    else
+      size='?'
+      #This continue will skip listing missing symlinks
+      #continue;
+    fi
+
     appid=${path##*/}
     if [[ -z ${INFO_CACHE[$appid]:-} ]];then
       infos=$(get_infos "$appid")
@@ -203,7 +210,7 @@ function main () {
 
       echo "${MODE:->>} Removing $path" >&2
       if [[ $live -eq 1 ]]; then
-        if [[ -L "$path" ]]; then
+        if [[ -L "$path" && -e "$(readlink "$path")" ]]; then
           realpath=$(realpath "$(readlink "$path")");
           rm -rf "$realpath" # Remove the directory
         fi
