@@ -3,23 +3,24 @@
 #License: DBAD: https://github.com/scawp/Steam-Deck.Shader-Cache-Killer/blob/main/LICENSE.md
 #Source: https://github.com/scawp/Steam-Deck-Shader.Cache-Killer
 
+#stop running script if anything returns an error (non-zero exit )
+set -e
+
 repo_url="https://raw.githubusercontent.com/scawp/Steam-Deck.Shader-Cache-Killer/main"
 
 tmp_dir="/tmp/scawp.SDSCK.install"
 
 script_install_dir="/home/deck/.local/share/scawp/SDSCK"
 
-distributor=$(lsb_release -is 2>/dev/null)
+device_name="$(uname --nodename)"
+user="$(id -u deck)"
 
-#stop running script if anything returns an error (non-zero exit )
-set -e
-
-if [[ "$distributor" != "SteamOS" || "$USER" != "deck" ]]; then
-  zenity --question --width=600 \
-         --text="This code has been written specifically for the Steam Deck with user 'deck'. \
-               \nIt appears you are running on a different system/non-standard configuration. \
-               \nAre you sure you want to continue?"
-  if [[ $? -ne 0 ]]; then
+if [ "$device_name" !='' "steamdeck" ] || [ "$user" != "1000" ]; then
+  zenity --question --width=400 \
+  --text="This code has been written specifically for the Steam Deck with user Deck \
+  \nIt appears you are running on a different system/non-standard configuration. \
+  \nAre you sure you want to continue?"
+  if [ "$?" != 0 ]; then
     #NOTE: This code will never be reached due to "set -e", the system will already exit for us but just incase keep this
     echo "bye then! xxx"
     exit 1;
@@ -27,12 +28,12 @@ if [[ "$distributor" != "SteamOS" || "$USER" != "deck" ]]; then
 fi
 
 function install_zShaderCacheKiller () {
-  zenity --question --width=696 \
-         --text="Before proceeding, read:\n${repo_url}/README.md \
-          \n\nWould you like to add Shader Cache Killer to your Steam Library?"
-  if [[ $? -ne 0 ]]; then
+  zenity --question --width=400 \
+    --text="Read $repo_url/README.md before proceeding. \
+    \nWould you like to add Shader Cache Killer to your Steam Library?"
+  if [ "$?" != 0 ]; then
     #NOTE: This code will never be reached due to "set -e", the system will already exit for us but just incase keep this
-    echo "bye then!"
+    echo "bye then! xxx"
     exit 0;
   fi
 
