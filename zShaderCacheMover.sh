@@ -1,13 +1,13 @@
 #!/bin/bash
-#Steam Deck Shader Cache Killer by scawp
-#License: DBAD: https://github.com/scawp/Steam-Deck.Shader-Cache-Killer/blob/main/LICENSE.md
-#Source: https://github.com/scawp/Steam-Deck.Shader-Cache-Killer
+#Steam Deck Shader Cache Killer by scawp and rewamped by introkun
+#License: DBAD: https://raw.githubusercontent.com/introkun/Steam-Deck.Shader-Cache-Killer-Rewamped/main/LICENSE.md
+#Source: https://github.com/introkun/Steam-Deck-Shader.Cache-Killer-Rewamped (original source is here https://github.com/scawp/Steam-Deck-Shader.Cache-Killer)
 # Use at own Risk!
 
-tmp_dir="/tmp/scawp.SDCacheKiller/Mover"
+tmp_dir="/tmp/introkun.SDCacheKiller/Mover"
 steamapps_dir="/home/deck/.local/share/Steam/steamapps"
 
-#create tempory directory
+#create temporary directory
 mkdir -p "$tmp_dir"
 
 #check we can find the steamapps directory
@@ -56,6 +56,7 @@ function get_list () {
     if [ ! -z "${column[1]}" ] && [ -d "$steamapps_dir/$1/${column[1]}" ]; then
       if [ ! -h "$steamapps_dir/$1/${column[1]}" ]; then
         size="$(du -m --max-depth 0  "$steamapps_dir/$1/${column[1]}" | sed -e 's/\s*\/.*$//')"
+        size="$(echo $size | awk '{printf "%010d", $1;}')"
         echo -e "FALSE\t$size\t${column[1]}\t${column[2]}\t${column[0]}" >> "$tmp_dir/move_list.txt"
       fi
     fi

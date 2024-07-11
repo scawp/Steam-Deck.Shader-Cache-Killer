@@ -1,0 +1,8 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=Install zShaderCacheUtilities
+Exec=curl https://raw.githubusercontent.com/introkun/Steam-Deck.Shader-Cache-Killer/main/curl_install.sh | bash -s --
+Icon=steamdeck-gaming-return
+Terminal=true
+Type=Application
+StartupNotify=false
